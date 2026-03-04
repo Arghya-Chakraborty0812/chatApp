@@ -4,3 +4,5 @@ const httpClient = axios.create({
     baseURL: baseUrl,
 });
 export default httpClient;
+
+// production : https://chatapp-latest-bkvj.onrender.com

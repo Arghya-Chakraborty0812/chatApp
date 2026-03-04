@@ -131,7 +131,7 @@ export default function ChatPage() {
                 <div key={index} className={`flex ${message.sender === currentUser ? "justify-end" : "justify-start"}`}>
                     <div className={`my-2 ${message.sender === currentUser ? 'bg-green-800' : 'bg-gray-800'} p-2 max-w-xs rounded`}>
                     <div className='flex flex-row gap-2'>
-                        <img className='h-10 w-10' src={"https://avatar.iran.liara.run/public/9"} alt='/'/>
+                    <img className='h-10 w-10 rounded-full object-cover' src={message.avatar || "https://randomuser.me/api/portraits/men/1.jpg"} alt="avatar"/>
                         <div className='flex flex-col gap-1'>
                             <p className='text-sm font-bold'>{message.sender}</p>
                             <p>{message.content}</p>
