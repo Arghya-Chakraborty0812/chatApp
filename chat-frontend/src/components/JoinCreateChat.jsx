@@ -15,6 +15,9 @@ export default function JoinCreateChat() {
 
     const [selectedAvatar, setSelectedAvatar] = useState("");
 
+    const [loadingType, setLoadingType] = useState(null);
+// values: "join" | "create" | null
+
     const { roomId, currentUser, setRoomId, setCurrentUser, setConnected } = useChatContext();
     const navigate = useNavigate();
 
@@ -49,6 +52,8 @@ export default function JoinCreateChat() {
     async function joinChat(){
         if(validateForm()){
            try{
+            setLoadingType("join");   // START LOADER
+
             await saveUser();
 
             const room = await joinChatApi(detail.roomId);
@@ -64,12 +69,17 @@ export default function JoinCreateChat() {
             console.log(error);
             toast.error("Error joining room");
            }
+           finally{
+            setLoadingType(null);  // STOP LOADER
+           }
         }
     }
 
     async function createRoom(){
         if(validateForm()){
            try{
+            setLoadingType("create")  // START LOADER
+
             await saveUser();
 
             const response = await createRoomApi(detail.roomId);
@@ -84,6 +94,9 @@ export default function JoinCreateChat() {
            catch(error){
             console.log(error);
             toast.error("Error creating room");
+           }
+           finally{
+            setLoadingType(null);  // STOP LOADER
            }
         }
     }
@@ -155,20 +168,48 @@ export default function JoinCreateChat() {
         </div>
 
         <div className='flex justify-center gap-2'>
-            <button 
-                className='px-3 py-2 dark:bg-blue-500 hover:dark:bg-blue-800 rounded-lg'
-                onClick={joinChat}
-            >
-                Join Room
-            </button>
 
-            <button 
-                className='px-3 py-2 dark:bg-orange-500 hover:dark:bg-orange-800 rounded-lg'
-                onClick={createRoom}
-            >
-                Create Room
-            </button>
-        </div>
+{/* Join Button */}
+<button 
+    disabled={loadingType !== null}
+    onClick={joinChat}
+    className={`px-4 py-2 rounded-lg flex items-center justify-center gap-2 min-w-[130px]
+    ${loadingType === "join"
+        ? "bg-gray-400 cursor-not-allowed"
+        : "dark:bg-blue-500 hover:dark:bg-blue-800"}
+    `}
+>
+    {loadingType === "join" ? (
+        <>
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Joining...
+        </>
+    ) : (
+        "Join Room"
+    )}
+</button>
+
+{/* Create Button */}
+<button 
+    disabled={loadingType !== null}
+    onClick={createRoom}
+    className={`px-4 py-2 rounded-lg flex items-center justify-center gap-2 min-w-[130px]
+    ${loadingType === "create"
+        ? "bg-gray-400 cursor-not-allowed"
+        : "dark:bg-orange-500 hover:dark:bg-orange-800"}
+    `}
+>
+    {loadingType === "create" ? (
+        <>
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+            Creating...
+        </>
+    ) : (
+        "Create Room"
+    )}
+</button>
+
+</div>
        
       </div>
     </div>
